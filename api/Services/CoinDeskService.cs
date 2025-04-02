@@ -16,6 +16,7 @@ namespace api.Services
     public class CoinDeskService : ICoinDeskService
     {
         private readonly ICurrencyRepository _currencyRepo;
+        private static readonly HttpClient _client = new HttpClient();
         public CoinDeskService(ICurrencyRepository currencyRepo)
         {
             _currencyRepo = currencyRepo;
@@ -23,12 +24,11 @@ namespace api.Services
 
         public async Task<string> GetCoinDesk()
         {
-            using HttpClient client = new HttpClient();
             string url = "https://api.coindesk.com/v1/bpi/currentprice.json";
 
             try
             {
-                HttpResponseMessage response = await client.GetAsync(url);
+                HttpResponseMessage response = await _client.GetAsync(url);
                 response.EnsureSuccessStatusCode(); // Throw if not a success code (2xx)
 
                 string responseBody = await response.Content.ReadAsStringAsync();
@@ -61,47 +61,34 @@ namespace api.Services
 
                 var formattedTime = DateTime.Parse(data.Time.UpdatedISO).ToString("yyyy/MM/dd hh:MM:ss");
 
+                var currencyDict = currencyData.ToDictionary(x => x.Code, x => x.Name);
+
                 // mapping data
+                void AddCurrency(CurrencyInfoDto currencyInfo)
+                {
+                    if (currencyInfo == null) return;
+
+                    responseList.Add(new CurrencyMappingDto
+                    {
+                        Code = currencyInfo.Code,
+                        Name = currencyDict.ContainsKey(currencyInfo.Code) ? currencyDict[currencyInfo.Code] : null,
+                        Rate = currencyInfo.Rate,
+                        UpdateTime = formattedTime
+                    });
+                }
+
                 if (data?.Bpi?.USD != null)
-                {
-                    var item = new CurrencyMappingDto
-                    {
-                        Code = data.Bpi.USD.Code,
-                        Name = currencyData.Where(x => x.Code == data.Bpi.USD.Code).FirstOrDefault()?.Name,
-                        Rate = data.Bpi.USD.Rate,
-                        UpdateTime = formattedTime
-                    };
-                    responseList.Add(item);
-                }
+                    AddCurrency(data?.Bpi?.USD);
                 if (data?.Bpi?.GBP != null)
-                {
-                    var item = new CurrencyMappingDto
-                    {
-                        Code = data.Bpi.GBP.Code,
-                        Name = currencyData.Where(x => x.Code == data.Bpi.GBP.Code).FirstOrDefault()?.Name,
-                        Rate = data.Bpi.GBP.Rate,
-                        UpdateTime = formattedTime
-                    };
-                    responseList.Add(item);
-                }
+                    AddCurrency(data?.Bpi?.GBP);
                 if (data?.Bpi?.EUR != null)
-                {
-                    var item = new CurrencyMappingDto
-                    {
-                        Code = data.Bpi.EUR.Code,
-                        Name = currencyData.Where(x => x.Code == data.Bpi.EUR.Code).FirstOrDefault()?.Name,
-                        Rate = data.Bpi.EUR.Rate,
-                        UpdateTime = formattedTime
-                    };
-                    responseList.Add(item);
-                }
+                    AddCurrency(data?.Bpi?.EUR);
 
-                var response = responseList.OrderBy(x => x.Code).ToList();
-
-                return response;
+                return responseList.OrderBy(x => x.Code).ToList();
             }
             catch (Exception e)
             {
+                Console.WriteLine($"Error in GetFormattedCoinDesk: {e.Message}");
                 return null;
             }
         }

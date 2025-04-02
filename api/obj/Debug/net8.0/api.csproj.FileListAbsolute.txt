@@ -139,3 +139,4 @@
 /Users/andrewhu/Documents/GitHub/Cathay/api/bin/Debug/net8.0/Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll
 /Users/andrewhu/Documents/GitHub/Cathay/api/bin/Debug/net8.0/Newtonsoft.Json.dll
 /Users/andrewhu/Documents/GitHub/Cathay/api/bin/Debug/net8.0/Newtonsoft.Json.Bson.dll
+/Users/andrewhu/Documents/GitHub/Cathay/api/obj/Debug/net8.0/api.sourcelink.json
