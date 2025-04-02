@@ -230,3 +230,4 @@
 /Users/andrewhu/Documents/GitHub/Cathay/api.tests/obj/Debug/net8.0/api.tests.pdb
 /Users/andrewhu/Documents/GitHub/Cathay/api.tests/obj/Debug/net8.0/api.tests.genruntimeconfig.cache
 /Users/andrewhu/Documents/GitHub/Cathay/api.tests/obj/Debug/net8.0/ref/api.tests.dll
+/Users/andrewhu/Documents/GitHub/Cathay/api.tests/obj/Debug/net8.0/api.tests.sourcelink.json

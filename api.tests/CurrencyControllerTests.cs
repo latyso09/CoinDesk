@@ -13,8 +13,8 @@ namespace api.tests
     [TestClass]
     public class CurrencyControllerTests
     {
-        private Mock<ICurrencyRepository> _mockCurrencyRepo;
-        private CurrencyController _controller;
+        private Mock<ICurrencyRepository>? _mockCurrencyRepo;
+        private CurrencyController? _controller;
         [TestInitialize]
         public void Setup()
         {
